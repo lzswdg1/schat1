@@ -1,0 +1,83 @@
+# Local development template; copy to application.yaml before building.
+# Supply secrets through the environment or a local, ignored .env file.
+server:
+  address: 127.0.0.1
+  port: ${CHAT_SERVICE_PORT:8082}
+  forward-headers-strategy: none
+spring:
+  config:
+    import: optional:file:./.env[.properties]
+  application:
+    name: s-server
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD}
+      connect-timeout: 2s
+      timeout: 2s
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:schat}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: ${MYSQL_USERNAME:schat}
+    password: ${MYSQL_PASSWORD}
+    hikari:
+      minimum-idle: 2
+      maximum-pool-size: 15
+      connection-timeout: 30000
+  flyway:
+    enabled: true
+    locations: classpath:db/migration/server
+    table: flyway_schema_history_server
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: true
+  autoconfigure:
+    exclude:
+    - org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration
+sa-token:
+  token-name: Authorization
+  token-prefix: Bearer
+  timeout: 2592000
+  active-timeout: -1
+  is-concurrent: true
+  is-share: true
+  token-style: jwt
+  is-log: false
+  jwt-secret-key: ${SCHAT_JWT_SECRET}
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+schat:
+  internal:
+    secret: ${SCHAT_INTERNAL_SECRET}
+  instance:
+    id: ${SCHAT_INSTANCE_ID:local-chat-1}
+  legacy-async-persistence:
+    enabled: false
+  delivery-ops:
+    enabled: ${SCHAT_DELIVERY_OPS_ENABLED:false}
+    secret: ${SCHAT_DELIVERY_OPS_SECRET:}
+    auto-cleanup-enabled: ${SCHAT_DELIVERY_OPS_AUTO_CLEANUP_ENABLED:false}
+  delivery-alert:
+    enabled: ${SCHAT_DELIVERY_ALERT_ENABLED:false}
+    url: ${SCHAT_DELIVERY_ALERT_URL:}
+    secret: ${SCHAT_DELIVERY_ALERT_SECRET:}
+  heartbeat:
+    interval: 10
+    timeout: 30
+  shutdown:
+    wait-seconds: 5
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+knife4j:
+  enable: true

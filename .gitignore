@@ -1,0 +1,64 @@
+# Build output and dependencies
+**/target/
+**/node_modules/
+**/dist/
+.m2/
+*.class
+.eslintcache
+
+# Local runtime configuration; only explicit examples belong in source control
+.env
+.env.*
+!.env.example
+**/application*.yaml
+**/application*.yml
+**/application*.properties
+!**/application.example.yaml
+!**/application.example.yml
+!**/application.example.properties
+**/logback*.xml
+!**/logback-spring.example.xml
+compose.yaml
+compose.yml
+docker-compose.yaml
+docker-compose.yml
+!compose.example.yaml
+
+# Private material and runtime data
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+.secrets/
+secrets/
+**/logs/
+**/uploads/
+**/schat-uploads/
+**/backups/
+**/data/
+*.log
+*.log.*
+*.dump
+*.sql.gz
+*.sql.zip
+*.sqlite
+*.sqlite3
+.jqwik-database
+
+# Workstation and tool settings
+.idea/
+.vscode/
+.kiro/
+.claude/
+.codex/
+.agents/
+*.iml
+*.local
+.DS_Store
+Thumbs.db
+
+# Personal notes and locally generated evidence
+/private/
+/reports/

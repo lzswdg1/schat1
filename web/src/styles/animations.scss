@@ -1,0 +1,355 @@
+// ============================================
+// 动画系统 — Apple / Telegram 级流体动效
+// 使用 spring-like cubic-bezier 缓动
+// 所有动画仅使用 transform + opacity，零布局重排
+// ============================================
+
+// --- Spring 缓动函数 ---
+// Apple 风格弹性：快速启动，柔和着陆
+$spring: cubic-bezier(0.22, 1, 0.36, 1);
+$spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+$spring-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+$ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+
+// ============================================
+// 消息气泡弹入 — Telegram 风格
+// ============================================
+@keyframes msg-slide-in {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes msg-slide-in-self {
+  0% {
+    opacity: 0;
+    transform: translateX(20px) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes msg-slide-in-other {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.message-enter-active {
+  animation: msg-slide-in 420ms $spring both;
+}
+
+.message-leave-active {
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.message-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+// 自己的消息从右侧滑入
+.message-bubble--self.message-enter-active {
+  animation: msg-slide-in-self 420ms $spring both;
+}
+
+// 他人的消息从左侧滑入
+.message-bubble--other.message-enter-active {
+  animation: msg-slide-in-other 420ms $spring both;
+}
+
+// ============================================
+// 路由切换 — Apple 风格淡入 + 微缩放
+// ============================================
+.page-fade-enter-active {
+  transition: opacity 350ms $spring, transform 350ms $spring;
+}
+
+.page-fade-leave-active {
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+}
+
+.page-fade-enter-from {
+  opacity: 0;
+  transform: scale(0.97) translateY(8px);
+}
+
+.page-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.99);
+}
+
+// ============================================
+// 聊天区域切换 — 会话切换时的过渡
+// ============================================
+@keyframes chat-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-transition-enter-active {
+  animation: chat-enter 400ms $spring both;
+}
+
+// ============================================
+// 工具栏浮现 — 柔和弹出
+// ============================================
+.toolbar-fade-enter-active {
+  transition: opacity 180ms ease, transform 250ms $spring-bounce;
+}
+
+.toolbar-fade-leave-active {
+  transition: opacity 120ms ease-out, transform 120ms ease-out;
+}
+
+.toolbar-fade-enter-from {
+  opacity: 0;
+  transform: translateY(6px) scale(0.9);
+}
+
+.toolbar-fade-leave-to {
+  opacity: 0;
+  transform: translateY(4px) scale(0.95);
+}
+
+// ============================================
+// 图片预览 — 电影级遮罩 + 缩放
+// ============================================
+.image-preview-fade-enter-active {
+  transition: opacity 300ms ease;
+
+  .image-preview__img {
+    transition: transform 400ms $spring, opacity 300ms ease;
+  }
+}
+
+.image-preview-fade-leave-active {
+  transition: opacity 250ms ease-out;
+
+  .image-preview__img {
+    transition: transform 250ms ease-out, opacity 250ms ease-out;
+  }
+}
+
+.image-preview-fade-enter-from {
+  opacity: 0;
+
+  .image-preview__img {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+}
+
+.image-preview-fade-leave-to {
+  opacity: 0;
+
+  .image-preview__img {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+}
+
+// ============================================
+// 折叠/展开 — 平滑高度 + 淡入
+// ============================================
+.collapse-enter-active {
+  transition: max-height 350ms $spring, opacity 250ms ease;
+  overflow: hidden;
+}
+
+.collapse-leave-active {
+  transition: max-height 280ms $ease-in-out-quart, opacity 180ms ease;
+  overflow: hidden;
+}
+
+.collapse-enter-from,
+.collapse-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+
+// ============================================
+// 通用淡入
+// ============================================
+.fade-enter-active {
+  transition: opacity 250ms ease;
+}
+
+.fade-leave-active {
+  transition: opacity 180ms ease-out;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+// ============================================
+// 从底部滑入 — 弹性
+// ============================================
+.slide-up-enter-active {
+  transition: opacity 300ms ease, transform 400ms $spring;
+}
+
+.slide-up-leave-active {
+  transition: opacity 180ms ease-out, transform 180ms ease-out;
+}
+
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+// ============================================
+// 缩放弹入 — 用于弹窗、卡片
+// ============================================
+@keyframes scale-spring-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  70% {
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.scale-in-enter-active {
+  animation: scale-spring-in 400ms $spring both;
+}
+
+.scale-in-leave-active {
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+}
+
+.scale-in-leave-to {
+  opacity: 0;
+  transform: scale(0.92);
+}
+
+// ============================================
+// 右键菜单弹出
+// ============================================
+.context-menu-enter-active {
+  transition: opacity 150ms ease, transform 200ms $spring-bounce;
+}
+
+.context-menu-leave-active {
+  transition: opacity 100ms ease-out, transform 100ms ease-out;
+}
+
+.context-menu-enter-from {
+  opacity: 0;
+  transform: scale(0.88) translateY(-4px);
+}
+
+.context-menu-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+// ============================================
+// 引用预览滑入
+// ============================================
+.quote-slide-enter-active {
+  transition: max-height 300ms $spring, opacity 200ms ease;
+  overflow: hidden;
+}
+
+.quote-slide-leave-active {
+  transition: max-height 200ms ease-out, opacity 150ms ease-out;
+  overflow: hidden;
+}
+
+.quote-slide-enter-from,
+.quote-slide-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+
+// ============================================
+// 弹性滚动
+// ============================================
+.elastic-scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+// ============================================
+// 全局微交互 mixin
+// ============================================
+@mixin hover-lift {
+  transition: transform 200ms $spring, box-shadow 200ms ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    transition-duration: 80ms;
+  }
+}
+
+@mixin press-scale {
+  transition: transform 200ms $spring;
+
+  &:active {
+    transform: scale(0.96);
+    transition-duration: 80ms;
+  }
+}
+
+@mixin ripple-bg($color: rgba(0, 0, 0, 0.04)) {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: $color;
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+
+  &:hover::after {
+    opacity: 1;
+  }
+
+  &:active::after {
+    opacity: 0;
+    transition-duration: 0ms;
+  }
+}

@@ -1,0 +1,35 @@
+# Local development template; copy to application.yaml before building.
+# Supply secrets through the environment or a local, ignored .env file.
+server:
+  address: 127.0.0.1
+  port: ${FILE_SERVICE_PORT:8083}
+  forward-headers-strategy: none
+spring:
+  config:
+    import: optional:file:./.env[.properties]
+  application:
+    name: s-file
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+sa-token:
+  token-name: Authorization
+  token-prefix: Bearer
+  timeout: 2592000
+  is-concurrent: true
+  is-share: true
+  token-style: jwt
+  is-log: false
+  jwt-secret-key: ${SCHAT_JWT_SECRET}
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+knife4j:
+  enable: true

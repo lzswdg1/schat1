@@ -1,0 +1,20 @@
+{
+  "code": 200,
+  "message": "操作成功",
+  "data": [
+    {
+      "sessionId": "group_10",
+      "messageId": "9007199254740995",
+      "fromId": "9007199254740997",
+      "content": "needle <img src=x onerror=window.__searchXss=1>",
+      "createTime": 1700000002000
+    },
+    {
+      "sessionId": "2",
+      "messageId": "9007199254740993",
+      "fromId": "1",
+      "content": "needle private",
+      "createTime": 1700000001000
+    }
+  ]
+}
